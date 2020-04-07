@@ -1,7 +1,7 @@
 ChangeLog
 =========
 
-2.0.0 (unreleased)
+2.0.0 (2020-04-07)
 ------------------
 
 - updated to work with py3
