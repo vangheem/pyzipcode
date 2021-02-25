@@ -1,7 +1,7 @@
 ChangeLog
 =========
 
-2.0.1 (unreleased)
+2.0.1 (2021-02-25)
 ------------------
 
 - Fix error message for unknown zip code[mpcusack]
