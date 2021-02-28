@@ -4,7 +4,7 @@ ChangeLog
 2.0.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- license update
 
 
 2.0.1 (2021-02-25)
