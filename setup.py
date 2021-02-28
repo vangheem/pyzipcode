@@ -10,7 +10,7 @@ setup(
     author="Nathan Van Gheem",
     author_email="vangheem@gmail.com",
     url="https://github.com/vangheem/pyzipcode",
-    license="GPL",
+    license="MIT",
     packages=find_packages(exclude=["ez_setup", "examples", "tests"]),
     include_package_data=True,
     zip_safe=False,
