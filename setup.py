@@ -6,7 +6,11 @@ setup(
     description="query zip codes and location data",
     long_description=open("README.md").read() + "\n\n" + open("CHANGES.md").read(),
     long_description_content_type='text/markdown',
-    classifiers=[],  # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+    ],
     keywords="zip code distance",
     author="Nathan Van Gheem",
     author_email="vangheem@gmail.com",
@@ -16,6 +20,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[],
+    python_requires='>=3.3',
     entry_points="""
       # -*- Entry points: -*-
       """,

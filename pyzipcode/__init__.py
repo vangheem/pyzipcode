@@ -1,13 +1,14 @@
 """The pyzipcode package"""
 
 
-from pyzipcode.settings import db_location
 import sqlite3
-
 import time
+from collections.abc import Mapping
+
+from pyzipcode.settings import db_location
 
 
-class ConnectionManager(object):
+class ConnectionManager:
     """
     Assumes a database that will work with cursor objects
     """
@@ -42,7 +43,7 @@ class ConnectionManager(object):
 
         if not conn and retry_count > 10:
             raise sqlite3.OperationalError(
-                "Can't connect to sqlite database: '%s'." % db_location
+                f"Can't connect to sqlite database: {db_location!r}."
             )
 
         cursor = conn.cursor()
@@ -64,21 +65,29 @@ ZIP_RANGE_QUERY = (
     "  AND latitude <= ?"
 )
 ZIP_FIND_QUERY = "SELECT * FROM ZipCodes WHERE city LIKE ? AND state LIKE ?"
+ZIP_ALL_QUERY = "SELECT zip FROM ZipCodes ORDER BY zip ASC"
+ZIP_ALL_REVERSED_QUERY = "SELECT zip FROM ZipCodes ORDER BY zip DESC"
+ZIP_LEN_QUERY = "SELECT COUNT(*) FROM ZipCodes"
 
 
-class ZipCode(object):
+class ZipCode:
     """
     Represents one zipcode record from the database.
     """
 
-    def __init__(self, data):
-        self.zip = data[0]
-        self.city = data[1]
-        self.state = data[2]
-        self.longitude = data[3]
-        self.latitude = data[4]
-        self.timezone = data[5]
-        self.dst = data[6]
+    def __init__(self, zip, city, state, longitude, latitude, timezone, dst):
+        self.zip = zip
+        self.city = city
+        self.state = state
+        self.longitude = longitude
+        self.latitude = latitude
+        self.timezone = timezone
+        self.dst = dst
+
+    def __repr__(self):
+        attrs = ["zip", "city", "state", "longitude", "latitude", "timezone", "dst"]
+        attrs = ', '.join(f'{a}={repr(getattr(self, a))}' for a in attrs)
+        return f"{self.__class__.__name__}({attrs})"
 
 
 def format_result(zips):
@@ -87,7 +96,7 @@ def format_result(zips):
     Returns a list of ZipCode objects.
     """
     if len(zips) > 0:
-        return [ZipCode(zc) for zc in zips]
+        return [ZipCode(*zc) for zc in zips]
     else:
         return None
 
@@ -100,7 +109,7 @@ class ZipNotFoundException(Exception):
     pass
 
 
-class ZipCodeDatabase(object):
+class ZipCodeDatabase(Mapping):
     """
     Interface to the zipcode lookup functionality
     """
@@ -114,13 +123,11 @@ class ZipCodeDatabase(object):
         """
         Returns a list of ZipCode objects within radius miles of the zipcode.
         """
-        zips = self.get(zipcode)
-        if zips is None:
+        zipcode = self.get(zipcode)
+        if zipcode is None:
             raise ZipNotFoundException(
-                "Could not find zipcode '%s' within radius %s" % (zipcode, radius)
+                f"Could not find zipcode '{zipcode}' within radius {radius}"
             )
-        else:
-            zipcode = zips[0]
 
         radius = float(radius)
 
@@ -157,15 +164,31 @@ class ZipCodeDatabase(object):
 
         return format_result(self.conn_manager.query(ZIP_FIND_QUERY, (city, state)))
 
-    def get(self, zipcode):
+
+    def get(self, zipcode, default=None):
         """
-        Return a list of one ZipCode object for the given zipcode.
+        Returns the ZipCode object representing the given zipcode, or `default` if
+        one can't be found.
         """
-        return format_result(self.conn_manager.query(ZIP_QUERY, (zipcode,)))
+        result = format_result(self.conn_manager.query(ZIP_QUERY, (zipcode,)))
+        if result:
+            return result[0]
+        return default
 
     def __getitem__(self, zipcode):
-        data = self.get(str(zipcode))
+        data = self.get(str(zipcode).zfill(5))
         if data is None:
-            raise IndexError("Couldn't find zipcode: '%s'" % zipcode)
+            raise KeyError(f"Couldn't find zipcode: '{zipcode}'")
         else:
-            return data[0]
+            return data
+
+    def __iter__(self):
+        for zip in self.conn_manager.query(ZIP_ALL_QUERY):
+            yield zip[0]
+
+    def __reversed__(self):
+        for zip in self.conn_manager.query(ZIP_ALL_REVERSED_QUERY):
+            yield zip[0]
+
+    def __len__(self):
+        return self.conn_manager.query(ZIP_LEN_QUERY)[0][0]

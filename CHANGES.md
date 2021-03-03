@@ -1,6 +1,19 @@
 ChangeLog
 =========
 
+3.0.0 (unreleased)
+------------------
+
+- ZipCodeDatabase objects now behave like dictionaries
+  - Looking up a non-existent zipcode raises a KeyError instead of IndexError
+  - .get() now returns a ZipCode object instead of a list containing 1 ZipCode object
+  - they now have a len(), can be iterated over and reversed()
+  - they now have .keys() .values() and .items() methods
+- ZipCode objects are created by passing multiple arguments, one for
+  each value, instead of a tuple
+- Support looking up 4 and 3 digit zip codes as integers
+- Drop Python 2 support
+
 2.0.3 (unreleased)
 ------------------
 

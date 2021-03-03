@@ -13,19 +13,11 @@ Here is some basic usage...
 ```pycon
 >>> from pyzipcode import ZipCodeDatabase
 >>> zcdb = ZipCodeDatabase()
->>> zipcode = zcdb[54115]
->>> zipcode.zip
-'54115'
->>> zipcode.city
-'De Pere'
->>> zipcode.state
-'WI'
->>> zipcode.longitude
--88.078959999999995
->>> zipcode.latitude
-44.42042
->>> zipcode.timezone
--6
+
+>>> zcdb[54115]
+ZipCode(zip='54115', city='De Pere', state='WI', longitude=-88.07896, latitude=44.42042, timezone=-6, dst=1)
+>>> zcdb[210]
+ZipCode(zip='00210', city='Portsmouth', state='NH', longitude=-71.013202, latitude=43.005895, timezone=-5, dst=1)
 ```
 
 Search zip codes...
@@ -35,6 +27,10 @@ Search zip codes...
 >>> zcdb = ZipCodeDatabase()
 >>> len(zcdb.find_zip(city="Oshkosh"))
 7
+>>> len(zcdb.find_zip(city="O%"))  # all cities starting with "O" using SQL wildcard
+60
+>>> len(zcdb.find_zip(city="Doesn't Exist"))  # returns None
+>>> 
 ```
 
 Get a list of zipcodes around a radius of a zipcode (this actually searches a square area)
