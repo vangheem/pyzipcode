@@ -4,7 +4,8 @@ setup(
     name="pyzipcode",
     version=open("VERSION").read().strip(),
     description="query zip codes and location data",
-    long_description=open("README.txt").read() + "\n\n" + open("CHANGES.txt").read(),
+    long_description=open("README.md").read() + "\n\n" + open("CHANGES.md").read(),
+    long_description_content_type='text/markdown',
     classifiers=[],  # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
     keywords="zip code distance",
     author="Nathan Van Gheem",
