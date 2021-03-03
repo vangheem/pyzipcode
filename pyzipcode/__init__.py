@@ -7,7 +7,7 @@ import sqlite3
 import time
 
 
-class ConnectionManager(object):
+class ConnectionManager:
     """
     Assumes a database that will work with cursor objects
     """
@@ -66,7 +66,7 @@ ZIP_RANGE_QUERY = (
 ZIP_FIND_QUERY = "SELECT * FROM ZipCodes WHERE city LIKE ? AND state LIKE ?"
 
 
-class ZipCode(object):
+class ZipCode:
     """
     Represents one zipcode record from the database.
     """
@@ -100,7 +100,7 @@ class ZipNotFoundException(Exception):
     pass
 
 
-class ZipCodeDatabase(object):
+class ZipCodeDatabase:
     """
     Interface to the zipcode lookup functionality
     """
@@ -117,7 +117,7 @@ class ZipCodeDatabase(object):
         zips = self.get(zipcode)
         if zips is None:
             raise ZipNotFoundException(
-                "Could not find zipcode '%s' within radius %s" % (zipcode, radius)
+                f"Could not find zipcode '{zipcode}' within radius {radius}"
             )
         else:
             zipcode = zips[0]
