@@ -42,8 +42,8 @@ def run_import():
     c.execute("CREATE INDEX city_index ON ZipCodes(city);")
     c.execute("CREATE INDEX state_index ON ZipCodes(state);")
 
-    reader = csv.reader(open(csv_location, "rb"))
-    reader.next()  # prime it
+    reader = csv.reader(open(csv_location, newline="", encoding="utf-8"))
+    next(reader)  # skip header row
 
     for row in reader:
         zip, city, state, lat, longt, timezone, dst = row
@@ -54,8 +54,6 @@ def run_import():
         )
 
     conn.commit()
-
-    # We can also close the cursor if we are done with it
     c.close()
 
 
