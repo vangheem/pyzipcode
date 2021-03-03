@@ -123,13 +123,11 @@ class ZipCodeDatabase(Mapping):
         """
         Returns a list of ZipCode objects within radius miles of the zipcode.
         """
-        zips = self.get(zipcode)
-        if zips is None:
+        zipcode = self.get(zipcode)
+        if zipcode is None:
             raise ZipNotFoundException(
                 f"Could not find zipcode '{zipcode}' within radius {radius}"
             )
-        else:
-            zipcode = zips[0]
 
         radius = float(radius)
 
@@ -169,11 +167,12 @@ class ZipCodeDatabase(Mapping):
 
     def get(self, zipcode, default=None):
         """
-        Return a list of one ZipCode object for the given zipcode.
+        Returns the ZipCode object representing the given zipcode, or `default` if
+        one can't be found.
         """
         result = format_result(self.conn_manager.query(ZIP_QUERY, (zipcode,)))
         if result:
-            return result
+            return result[0]
         return default
 
     def __getitem__(self, zipcode):
@@ -181,7 +180,7 @@ class ZipCodeDatabase(Mapping):
         if data is None:
             raise KeyError(f"Couldn't find zipcode: '{zipcode}'")
         else:
-            return data[0]
+            return data
 
     def __iter__(self):
         for zip in self.conn_manager.query(ZIP_ALL_QUERY):
