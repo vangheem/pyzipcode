@@ -42,7 +42,7 @@ class ConnectionManager:
 
         if not conn and retry_count > 10:
             raise sqlite3.OperationalError(
-                "Can't connect to sqlite database: '%s'." % db_location
+                f"Can't connect to sqlite database: {db_location!r}."
             )
 
         cursor = conn.cursor()
@@ -166,6 +166,6 @@ class ZipCodeDatabase:
     def __getitem__(self, zipcode):
         data = self.get(str(zipcode))
         if data is None:
-            raise IndexError("Couldn't find zipcode: '%s'" % zipcode)
+            raise IndexError(f"Couldn't find zipcode: '{zipcode}'")
         else:
             return data[0]

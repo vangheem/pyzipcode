@@ -49,8 +49,8 @@ def run_import():
         zip, city, state, lat, longt, timezone, dst = row
 
         c.execute(
-            'INSERT INTO ZipCodes values("%s", "%s", "%s", %s, %s, %s, %s)'
-            % (zip, city, state, float(longt), float(lat), timezone, dst)
+            'INSERT INTO ZipCodes values(?,?,?,?,?,?,?)',
+            (zip, city, state, float(longt), float(lat), timezone, dst),
         )
 
     conn.commit()
