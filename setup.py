@@ -20,7 +20,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[],
-    python_requires='>=3.3',
+    python_requires='>=3.6',
     entry_points="""
       # -*- Entry points: -*-
       """,
