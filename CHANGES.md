@@ -1,5 +1,11 @@
 # ChangeLog
 
+3.0.2 (unreleased)
+------------------
+
+- Nothing changed yet.
+
+
 3.0.1 (2021-03-03)
 
 - Fix release
