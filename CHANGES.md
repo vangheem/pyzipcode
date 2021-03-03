@@ -1,7 +1,7 @@
 ChangeLog
 =========
 
-3.0.0 (unreleased)
+3.0.0 (2021-03-03)
 ------------------
 
 - ZipCodeDatabase objects now behave like dictionaries
