@@ -75,14 +75,19 @@ class ZipCode:
     Represents one zipcode record from the database.
     """
 
-    def __init__(self, data):
-        self.zip = data[0]
-        self.city = data[1]
-        self.state = data[2]
-        self.longitude = data[3]
-        self.latitude = data[4]
-        self.timezone = data[5]
-        self.dst = data[6]
+    def __init__(self, zip, city, state, longitude, latitude, timezone, dst):
+        self.zip = zip
+        self.city = city
+        self.state = state
+        self.longitude = longitude
+        self.latitude = latitude
+        self.timezone = timezone
+        self.dst = dst
+
+    def __repr__(self):
+        attrs = ["zip", "city", "state", "longitude", "latitude", "timezone", "dst"]
+        attrs = ', '.join(f'{a}={repr(getattr(self, a))}' for a in attrs)
+        return f"{self.__class__.__name__}({attrs})"
 
 
 def format_result(zips):
@@ -91,7 +96,7 @@ def format_result(zips):
     Returns a list of ZipCode objects.
     """
     if len(zips) > 0:
-        return [ZipCode(zc) for zc in zips]
+        return [ZipCode(*zc) for zc in zips]
     else:
         return None
 
