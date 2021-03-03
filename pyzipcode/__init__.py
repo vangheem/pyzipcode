@@ -1,10 +1,11 @@
 """The pyzipcode package"""
 
 
-from pyzipcode.settings import db_location
 import sqlite3
-
 import time
+from collections.abc import Mapping
+
+from pyzipcode.settings import db_location
 
 
 class ConnectionManager:
@@ -64,6 +65,9 @@ ZIP_RANGE_QUERY = (
     "  AND latitude <= ?"
 )
 ZIP_FIND_QUERY = "SELECT * FROM ZipCodes WHERE city LIKE ? AND state LIKE ?"
+ZIP_ALL_QUERY = "SELECT zip FROM ZipCodes ORDER BY zip ASC"
+ZIP_ALL_REVERSED_QUERY = "SELECT zip FROM ZipCodes ORDER BY zip DESC"
+ZIP_LEN_QUERY = "SELECT COUNT(*) FROM ZipCodes"
 
 
 class ZipCode:
@@ -100,7 +104,7 @@ class ZipNotFoundException(Exception):
     pass
 
 
-class ZipCodeDatabase:
+class ZipCodeDatabase(Mapping):
     """
     Interface to the zipcode lookup functionality
     """
@@ -157,15 +161,30 @@ class ZipCodeDatabase:
 
         return format_result(self.conn_manager.query(ZIP_FIND_QUERY, (city, state)))
 
-    def get(self, zipcode):
+
+    def get(self, zipcode, default=None):
         """
         Return a list of one ZipCode object for the given zipcode.
         """
-        return format_result(self.conn_manager.query(ZIP_QUERY, (zipcode,)))
+        result = format_result(self.conn_manager.query(ZIP_QUERY, (zipcode,)))
+        if result:
+            return result
+        return default
 
     def __getitem__(self, zipcode):
         data = self.get(str(zipcode))
         if data is None:
-            raise IndexError(f"Couldn't find zipcode: '{zipcode}'")
+            raise KeyError(f"Couldn't find zipcode: '{zipcode}'")
         else:
             return data[0]
+
+    def __iter__(self):
+        for zip in self.conn_manager.query(ZIP_ALL_QUERY):
+            yield zip[0]
+
+    def __reversed__(self):
+        for zip in self.conn_manager.query(ZIP_ALL_REVERSED_QUERY):
+            yield zip[0]
+
+    def __len__(self):
+        return self.conn_manager.query(ZIP_LEN_QUERY)[0][0]
