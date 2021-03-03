@@ -177,7 +177,7 @@ class ZipCodeDatabase(Mapping):
         return default
 
     def __getitem__(self, zipcode):
-        data = self.get(str(zipcode))
+        data = self.get(str(zipcode).zfill(5))
         if data is None:
             raise KeyError(f"Couldn't find zipcode: '{zipcode}'")
         else:
