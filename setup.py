@@ -20,6 +20,12 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[],
+    extras_require={
+        'dev': [
+            'pytz',
+            'timezonefinder',
+        ]
+    },
     python_requires='>=3.6',
     entry_points="""
       # -*- Entry points: -*-
